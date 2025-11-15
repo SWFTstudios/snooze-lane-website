@@ -17,12 +17,12 @@ Create a table with the following fields:
 - **Coupon Code** (Single line text) - Format: SNOOZE100-XXXX
 - **Date Signed Up** (Date) - Auto-set
 
-#### Table 2: "Contact Submissions"
-Create a table with the following fields:
+#### Table 2: "General Inquiries"
+This table should already exist. Ensure it has the following fields:
 - **Name** (Single line text) - Required
 - **Email** (Email) - Required
 - **Message** (Long text) - Required
-- **Date Submitted** (Date) - Auto-set
+- **Date Submitted** (Date) - Optional, auto-set if exists
 
 ### 2. Cloudflare Pages Environment Variables
 

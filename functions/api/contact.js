@@ -60,7 +60,7 @@ export async function onRequestPost(context) {
     }
 
     // Create record in Airtable
-    const createUrl = `https://api.airtable.com/v0/${airtableBaseId}/Contact%20Submissions`;
+    const createUrl = `https://api.airtable.com/v0/${airtableBaseId}/General%20Inquiries`;
     const airtableData = {
       fields: {
         'Name': name,

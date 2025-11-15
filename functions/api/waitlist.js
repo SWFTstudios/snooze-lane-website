@@ -134,13 +134,11 @@ export async function onRequestPost(context) {
     }
     
     // Add date field
-    // If Airtable field has "Include time" enabled, use ISO timestamp
-    // If not, use date-only format
-    // Try timestamp first - if field doesn't accept it, Airtable will error and you can enable time in the field
+    // Note: If you want timestamps, enable "Include time" in the "Date Signed Up" field in Airtable
+    // Then change this to: now.toISOString() for full timestamp
     const now = new Date();
-    // Format: YYYY-MM-DDTHH:mm:ss.sssZ (ISO 8601 with time)
-    // If your field doesn't have time enabled, change to: now.toISOString().split('T')[0]
-    fields['Date Signed Up'] = now.toISOString();
+    const dateString = now.toISOString().split('T')[0]; // Format: YYYY-MM-DD (date only)
+    fields['Date Signed Up'] = dateString;
     
     const airtableData = { fields };
 

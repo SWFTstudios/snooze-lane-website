@@ -2,6 +2,9 @@ name = "snooze-lane-forms"
 main = "src/index.js"
 compatibility_date = "2024-11-15"
 
+[observability]
+enabled = true
+
 [env.production]
 name = "snooze-lane-forms"
 

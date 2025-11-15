@@ -1,0 +1,24 @@
+{
+  "name": "snooze-lane-forms-worker",
+  "version": "1.0.0",
+  "description": "Cloudflare Worker for handling Snooze Lane form submissions",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "deploy:production": "wrangler deploy --env production"
+  },
+  "keywords": [
+    "cloudflare",
+    "worker",
+    "forms",
+    "airtable",
+    "resend"
+  ],
+  "author": "SWFT Studios",
+  "license": "MIT",
+  "devDependencies": {
+    "wrangler": "^3.0.0"
+  }
+}
+

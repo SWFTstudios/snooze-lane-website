@@ -178,8 +178,21 @@ async function handleContact(request, env) {
     const airtableToken = env.AIRTABLE_ACCESS_TOKEN;
     const airtableBaseId = env.AIRTABLE_BASE_ID;
 
+    // Detailed logging
+    console.log('=== CONTACT FORM DEBUG ===');
+    console.log('env object keys:', Object.keys(env));
+    console.log('AIRTABLE_ACCESS_TOKEN exists:', !!airtableToken);
+    console.log('AIRTABLE_ACCESS_TOKEN type:', typeof airtableToken);
+    console.log('AIRTABLE_BASE_ID exists:', !!airtableBaseId);
+    console.log('AIRTABLE_BASE_ID value:', airtableBaseId);
+    console.log('AIRTABLE_BASE_ID type:', typeof airtableBaseId);
+
     if (!airtableToken || !airtableBaseId) {
-      return errorResponse('Server configuration error', 500);
+      const missing = [];
+      if (!airtableToken) missing.push('AIRTABLE_ACCESS_TOKEN');
+      if (!airtableBaseId) missing.push('AIRTABLE_BASE_ID');
+      console.error('Missing variables:', missing);
+      return errorResponse(`Server configuration error: Missing ${missing.join(' and ')}. Check Worker environment variables in Cloudflare Dashboard.`, 500);
     }
 
     // Create record in Airtable

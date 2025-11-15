@@ -134,9 +134,11 @@ export async function onRequestPost(context) {
     }
     
     // Only add Date Signed Up if field exists (optional)
-    // Airtable date fields accept ISO 8601 format
-    // Note: If the field doesn't exist, Airtable will ignore it
-    fields['Date Signed Up'] = new Date().toISOString();
+    // Airtable date fields need format: "YYYY-MM-DD" or "YYYY-MM-DDTHH:mm:ss.sssZ"
+    // Using just the date part to avoid timezone issues
+    const now = new Date();
+    const dateString = now.toISOString().split('T')[0]; // Format: YYYY-MM-DD
+    fields['Date Signed Up'] = dateString;
     
     const airtableData = { fields };
 
@@ -329,9 +331,54 @@ export async function onRequestPost(context) {
         <meta charset="utf-8">
         <title>Error</title>
         <style>
-          body { font-family: system-ui, sans-serif; padding: 40px; max-width: 600px; margin: 0 auto; }
-          .error { background: #fee; padding: 20px; border-radius: 8px; border: 1px solid #fcc; }
-          code { background: #f5f5f5; padding: 2px 6px; border-radius: 3px; font-size: 0.9em; }
+          body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; 
+            padding: 40px; 
+            max-width: 600px; 
+            margin: 0 auto; 
+            background: #ffffff;
+            color: #333333;
+            line-height: 1.6;
+          }
+          .error { 
+            background: #fff3cd; 
+            padding: 20px; 
+            border-radius: 8px; 
+            border: 2px solid #ffc107;
+            color: #856404;
+            margin: 20px 0;
+          }
+          .error strong {
+            color: #721c24;
+            font-weight: 600;
+          }
+          code { 
+            background: #f8f9fa; 
+            padding: 4px 8px; 
+            border-radius: 4px; 
+            font-size: 0.9em;
+            color: #d63384;
+            font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
+            border: 1px solid #dee2e6;
+            display: block;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            word-break: break-all;
+          }
+          h1 {
+            color: #212529;
+            margin-bottom: 20px;
+          }
+          a {
+            color: #0d6efd;
+            text-decoration: none;
+          }
+          a:hover {
+            text-decoration: underline;
+          }
+          ul {
+            color: #495057;
+          }
         </style>
       </head>
       <body>

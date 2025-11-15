@@ -134,11 +134,9 @@ export async function onRequestPost(context) {
     }
     
     // Only add Date Signed Up if field exists (optional)
-    try {
-      fields['Date Signed Up'] = new Date().toISOString();
-    } catch (e) {
-      // Date field is optional, continue without it
-    }
+    // Airtable date fields accept ISO 8601 format
+    // Note: If the field doesn't exist, Airtable will ignore it
+    fields['Date Signed Up'] = new Date().toISOString();
     
     const airtableData = { fields };
 
@@ -152,9 +150,15 @@ export async function onRequestPost(context) {
     });
 
     if (!createResponse.ok) {
-      const errorData = await createResponse.json();
+      let errorData;
+      try {
+        errorData = await createResponse.json();
+      } catch (e) {
+        errorData = { error: 'Failed to parse error response', status: createResponse.status, statusText: createResponse.statusText };
+      }
       console.error('Airtable API Error:', JSON.stringify(errorData, null, 2));
       console.error('Attempted to create record with fields:', JSON.stringify(fields, null, 2));
+      console.error('Airtable URL:', createUrl);
       throw new Error(`Airtable error: ${JSON.stringify(errorData)}`);
     }
 

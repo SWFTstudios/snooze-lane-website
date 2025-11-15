@@ -120,15 +120,27 @@ export async function onRequestPost(context) {
 
     // Create record in Airtable
     const createUrl = `https://api.airtable.com/v0/${airtableBaseId}/Waitlist%20Signups`;
-    const airtableData = {
-      fields: {
-        'Email': email,
-        'Signup Number': signupNumber,
-        'Premium Eligible': isPremiumEligible,
-        'Coupon Code': couponCode,
-        'Date Signed Up': new Date().toISOString()
-      }
+    
+    // Build fields object, only including non-null values
+    const fields = {
+      'Email': email,
+      'Signup Number': signupNumber,
+      'Premium Eligible': isPremiumEligible
     };
+    
+    // Only add Coupon Code if it exists
+    if (couponCode) {
+      fields['Coupon Code'] = couponCode;
+    }
+    
+    // Only add Date Signed Up if field exists (optional)
+    try {
+      fields['Date Signed Up'] = new Date().toISOString();
+    } catch (e) {
+      // Date field is optional, continue without it
+    }
+    
+    const airtableData = { fields };
 
     const createResponse = await fetch(createUrl, {
       method: 'POST',
@@ -141,6 +153,8 @@ export async function onRequestPost(context) {
 
     if (!createResponse.ok) {
       const errorData = await createResponse.json();
+      console.error('Airtable API Error:', JSON.stringify(errorData, null, 2));
+      console.error('Attempted to create record with fields:', JSON.stringify(fields, null, 2));
       throw new Error(`Airtable error: ${JSON.stringify(errorData)}`);
     }
 
@@ -301,11 +315,38 @@ export async function onRequestPost(context) {
 
   } catch (error) {
     console.error('Waitlist signup error:', error);
+    const errorMessage = error.message || 'Unknown error';
+    
+    // Return more detailed error for debugging (remove in production)
     return new Response(`
       <!DOCTYPE html>
       <html>
-      <head><meta charset="utf-8"><title>Error</title></head>
-      <body><p>Failed to process signup. Please try again later. <a href="/">Go back</a></p></body>
+      <head>
+        <meta charset="utf-8">
+        <title>Error</title>
+        <style>
+          body { font-family: system-ui, sans-serif; padding: 40px; max-width: 600px; margin: 0 auto; }
+          .error { background: #fee; padding: 20px; border-radius: 8px; border: 1px solid #fcc; }
+          code { background: #f5f5f5; padding: 2px 6px; border-radius: 3px; font-size: 0.9em; }
+        </style>
+      </head>
+      <body>
+        <h1>Form Submission Error</h1>
+        <div class="error">
+          <p><strong>Error:</strong> Failed to process signup.</p>
+          <p><strong>Details:</strong> <code>${errorMessage}</code></p>
+        </div>
+        <p><a href="/">← Go back</a></p>
+        <p style="font-size: 0.9em; color: #666; margin-top: 40px;">
+          If this error persists, please check:
+          <ul>
+            <li>Airtable table name matches exactly: "Waitlist Signups"</li>
+            <li>Field names match exactly (case-sensitive)</li>
+            <li>Cloudflare environment variables are set</li>
+            <li>Check Cloudflare Functions logs for more details</li>
+          </ul>
+        </p>
+      </body>
       </html>
     `, {
       status: 500,

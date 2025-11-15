@@ -177,20 +177,9 @@ async function handleContact(request, env) {
 
     const airtableToken = env.AIRTABLE_ACCESS_TOKEN;
     const airtableBaseId = env.AIRTABLE_BASE_ID;
-    const resendApiKey = env.RESEND_API_KEY;
-
-    // Debug logging for contact form
-    console.log('Contact form - Checking environment variables');
-    console.log('AIRTABLE_ACCESS_TOKEN exists:', !!airtableToken);
-    console.log('AIRTABLE_BASE_ID exists:', !!airtableBaseId);
-    console.log('AIRTABLE_BASE_ID value:', airtableBaseId);
 
     if (!airtableToken || !airtableBaseId) {
-      const missingVars = [];
-      if (!airtableToken) missingVars.push('AIRTABLE_ACCESS_TOKEN');
-      if (!airtableBaseId) missingVars.push('AIRTABLE_BASE_ID');
-      console.error('Contact form - Missing environment variables:', missingVars.join(', '));
-      return errorResponse(`Server configuration error: Missing ${missingVars.join(' and ')}. Please check Worker environment variables.`, 500);
+      return errorResponse('Server configuration error', 500);
     }
 
     // Create record in Airtable
@@ -202,12 +191,8 @@ async function handleContact(request, env) {
     };
     
     // Add date if field exists
-    try {
-      const now = new Date();
-      fields['Date Submitted'] = now.toISOString().split('T')[0];
-    } catch (e) {
-      // Date field is optional
-    }
+    const now = new Date();
+    fields['Date Submitted'] = now.toISOString().split('T')[0];
     
     const createResponse = await fetch(createUrl, {
       method: 'POST',
@@ -219,18 +204,9 @@ async function handleContact(request, env) {
     });
 
     if (!createResponse.ok) {
-      const errorData = await createResponse.json();
-      throw new Error(`Airtable error: ${JSON.stringify(errorData)}`);
-    }
-
-    // Send admin notification email
-    if (resendApiKey) {
-      try {
-        await sendContactNotificationEmail(name, email, message, resendApiKey);
-      } catch (emailError) {
-        console.error('Admin notification email error:', emailError);
-        // Don't fail the request if email fails
-      }
+      const errorData = await createResponse.json().catch(() => ({}));
+      console.error('Airtable error:', JSON.stringify(errorData));
+      throw new Error(`Failed to save message: ${errorData.error?.message || 'Unknown error'}`);
     }
 
     return successResponse('Thank you for your message! We will get back to you soon.', '/contact-us.html');

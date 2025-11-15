@@ -136,9 +136,9 @@ export async function onRequestPost(context) {
     // Only add Date Signed Up if field exists (optional)
     // Airtable date fields need format: "YYYY-MM-DD" or "YYYY-MM-DDTHH:mm:ss.sssZ"
     // Using just the date part to avoid timezone issues
+    // Add date field with timestamp (ISO 8601 format: YYYY-MM-DDTHH:mm:ss.sssZ)
     const now = new Date();
-    const dateString = now.toISOString().split('T')[0]; // Format: YYYY-MM-DD
-    fields['Date Signed Up'] = dateString;
+    fields['Date Signed Up'] = now.toISOString();
     
     const airtableData = { fields };
 

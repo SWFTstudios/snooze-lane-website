@@ -1,0 +1,8 @@
+# Example environment variables for local development
+# Copy this file to .dev.vars and fill in your actual values
+# .dev.vars is gitignored and will not be committed
+
+AIRTABLE_ACCESS_TOKEN=your_airtable_token_here
+AIRTABLE_BASE_ID=your_airtable_base_id_here
+RESEND_API_KEY=your_resend_api_key_here
+

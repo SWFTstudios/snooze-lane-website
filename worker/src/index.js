@@ -189,9 +189,10 @@ async function handleContact(request, env) {
       'Message': message,
     };
     
-    // Add date if field exists (optional - don't fail if field doesn't exist)
-    // Note: Only include Date Submitted if the field exists in your Airtable table
-    // If you want to add it, create a "Date" field named "Date Submitted" in General Inquiries table
+    // Add date field (Date format: YYYY-MM-DD)
+    const now = new Date();
+    const dateString = now.toISOString().split('T')[0];
+    fields['Date Submitted'] = dateString;
     
     const createUrl = `https://api.airtable.com/v0/${airtableBaseId}/General%20Inquiries`;
     const createResponse = await fetch(createUrl, {

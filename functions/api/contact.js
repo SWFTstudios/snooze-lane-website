@@ -66,10 +66,9 @@ export async function onRequestPost(context) {
       'Message': message,
     };
     
-    // Add date field (Date format: YYYY-MM-DD)
+    // Add date field with timestamp (ISO 8601 format: YYYY-MM-DDTHH:mm:ss.sssZ)
     const now = new Date();
-    const dateString = now.toISOString().split('T')[0];
-    fields['Date Submitted'] = dateString;
+    fields['Date Submitted'] = now.toISOString();
     
     const createUrl = `https://api.airtable.com/v0/${airtableBaseId}/General%20Inquiries`;
     const airtableData = { fields };

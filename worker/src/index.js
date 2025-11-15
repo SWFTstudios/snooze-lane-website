@@ -108,9 +108,9 @@ async function handleWaitlist(request, env) {
       fields['Coupon Code'] = couponCode;
     }
     
+    // Add date field with timestamp (ISO 8601 format: YYYY-MM-DDTHH:mm:ss.sssZ)
     const now = new Date();
-    const dateString = now.toISOString().split('T')[0];
-    fields['Date Signed Up'] = dateString;
+    fields['Date Signed Up'] = now.toISOString();
     
     const createUrl = `https://api.airtable.com/v0/${airtableBaseId}/Waitlist%20Signups`;
     const createResponse = await fetch(createUrl, {
@@ -189,10 +189,9 @@ async function handleContact(request, env) {
       'Message': message,
     };
     
-    // Add date field (Date format: YYYY-MM-DD)
+    // Add date field with timestamp (ISO 8601 format: YYYY-MM-DDTHH:mm:ss.sssZ)
     const now = new Date();
-    const dateString = now.toISOString().split('T')[0];
-    fields['Date Submitted'] = dateString;
+    fields['Date Submitted'] = now.toISOString();
     
     const createUrl = `https://api.airtable.com/v0/${airtableBaseId}/General%20Inquiries`;
     const createResponse = await fetch(createUrl, {

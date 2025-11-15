@@ -66,7 +66,9 @@ export async function onRequestPost(context) {
       'Message': message,
     };
     
-    // Add date field with timestamp (ISO 8601 format: YYYY-MM-DDTHH:mm:ss.sssZ)
+    // Add date field with timestamp
+    // Make sure "Date Submitted" field in Airtable has "Include time" enabled
+    // Format: YYYY-MM-DDTHH:mm:ss.sssZ (ISO 8601 with time)
     const now = new Date();
     fields['Date Submitted'] = now.toISOString();
     

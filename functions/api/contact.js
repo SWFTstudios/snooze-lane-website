@@ -60,15 +60,19 @@ export async function onRequestPost(context) {
     }
 
     // Create record in Airtable
-    const createUrl = `https://api.airtable.com/v0/${airtableBaseId}/General%20Inquiries`;
-    const airtableData = {
-      fields: {
-        'Name': name,
-        'Email': email,
-        'Message': message,
-        'Date Submitted': new Date().toISOString()
-      }
+    const fields = {
+      'Name': name,
+      'Email': email,
+      'Message': message,
     };
+    
+    // Add date field (Date format: YYYY-MM-DD)
+    const now = new Date();
+    const dateString = now.toISOString().split('T')[0];
+    fields['Date Submitted'] = dateString;
+    
+    const createUrl = `https://api.airtable.com/v0/${airtableBaseId}/General%20Inquiries`;
+    const airtableData = { fields };
 
     const createResponse = await fetch(createUrl, {
       method: 'POST',
